@@ -5,7 +5,7 @@ namespace FoodService.GraphQL
 {
     public class Mutation
     {
-        [Authorize(Roles = new[] { "BUYER" })]
+        [Authorize(Roles = new[] { "MANAGER", "BUYER" })]
         public async Task<Food> AddFoodAsync(
                FoodInput input,
                [Service] FoodDeliveryAppContext context)
