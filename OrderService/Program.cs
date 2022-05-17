@@ -1,3 +1,11 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using OrderService.GraphQL;
+using OrderService.Models;
+using System.Text;
+using UserService.QraphQL;
+
 var builder = WebApplication.CreateBuilder(args);
 var conString = builder.Configuration.GetConnectionString("MyDatabase");
 builder.Services.AddDbContext<FoodDeliveryAppContext>(options =>

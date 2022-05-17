@@ -44,18 +44,18 @@ namespace FoodService.GraphQL
             return await Task.FromResult(food);
         }
 
-        [Authorize(Roles = new[] { "MANAGER" })]
-        public async Task<Food> DeleteFoodByIdAsync(
-            int id,
-            [Service] FoodDeliveryAppContext context)
-        {
-            var food = context.Foods.Where(o => o.Id == id).FirstOrDefault();
-            if (food != null)
-            {
-                context.Foods.Remove(food);
-                await context.SaveChangesAsync();
-            }
-            return await Task.FromResult(food);
-        }
+        //[Authorize(Roles = new[] { "MANAGER" })]
+        //public async Task<Food> DeleteFoodByIdAsync(
+        //    int id,
+        //    [Service] FoodDeliveryAppContext context)
+        //{
+        //    var food = context.Foods.Where(o => o.Id == id).FirstOrDefault();
+        //    if (food != null)
+        //    {
+        //        context.Foods.Remove(food);
+        //        await context.SaveChangesAsync();
+        //    }
+        //    return await Task.FromResult(food);
+        //}
     }
 }
