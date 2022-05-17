@@ -12,8 +12,8 @@ namespace UserService.GraphQL
     public class Mutation
     {
         public async Task<UserData> RegisterUserAsync(
-           RegisterUser input,
-           [Service] FoodDeliveryAppContext context)
+        RegisterUser input,
+        [Service] FoodDeliveryAppContext context)
         {
             var user = context.Users.Where(o => o.Username == input.Username).FirstOrDefault();
             if (user != null)
@@ -27,10 +27,20 @@ namespace UserService.GraphQL
                 Username = input.Username,
                 Password = BCrypt.Net.BCrypt.HashPassword(input.Password) // encrypt password
             };
-
+            var memberRole = context.Roles.Where(m => m.Name == "BUYER").FirstOrDefault();
+            if (memberRole == null)
+                throw new Exception("Invalid Role");
+            var userRole = new UserRole
+            {
+                RoleId = memberRole.Id,
+                UserId = newUser.Id
+            };
+            newUser.UserRoles.Add(userRole);
             // EF
             var ret = context.Users.Add(newUser);
             await context.SaveChangesAsync();
+
+
 
             return await Task.FromResult(new UserData
             {
@@ -61,7 +71,7 @@ namespace UserService.GraphQL
                 var claims = new List<Claim>();
                 claims.Add(new Claim(ClaimTypes.Name, user.Username));
 
-                var userRoles = context.UserRoles.Where(o => o.Id == user.Id).ToList();
+                var userRoles = context.UserRoles.Where(o => o.UserId == user.Id).ToList(); //diganti userid
                 foreach (var userRole in userRoles)
                 {
                     var role = context.Roles.Where(o => o.Id == userRole.RoleId).FirstOrDefault();
@@ -89,7 +99,6 @@ namespace UserService.GraphQL
             return await Task.FromResult(new UserToken(null, null, Message: "Username or password was invalid"));
         }
 
-
         //[Authorize(Roles = new[] { "ADMIN" })]
         //public async Task<User> AddUserAsync(
         //    UserInput input,
@@ -115,7 +124,7 @@ namespace UserService.GraphQL
 
         [Authorize(Roles = new[] { "ADMIN" })]
         public async Task<User> UpdateUserAsync(
-            UserInput input,
+            UserData input,
             [Service] FoodDeliveryAppContext context)
         {
             var user = context.Users.Where(o => o.Id == input.Id).FirstOrDefault();
@@ -124,12 +133,10 @@ namespace UserService.GraphQL
                 user.FullName = input.FullName;
                 user.Email = input.Email;
                 user.Username = input.Username;
-                user.Password = input.Password;
 
                 context.Users.Update(user);
                 await context.SaveChangesAsync();
             }
-
             return await Task.FromResult(user);
         }
 
@@ -144,7 +151,6 @@ namespace UserService.GraphQL
                 context.Users.Remove(user);
                 await context.SaveChangesAsync();
             }
-
             return await Task.FromResult(user);
         }
 

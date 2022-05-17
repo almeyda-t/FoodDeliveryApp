@@ -14,7 +14,7 @@ namespace UserService.QraphQL
 {
     public class Query
     {
-        //[Authorize(Roles = new[] { "ADMIN" })] // dapat diakses kalau sudah login
+        [Authorize(Roles = new[] { "ADMIN" })] // dapat diakses kalau sudah login
         public IQueryable<UserData> GetUsers([Service] FoodDeliveryAppContext context) =>
             context.Users.Select(p => new UserData()
             {
