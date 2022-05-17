@@ -1,4 +1,5 @@
 ﻿using HotChocolate.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -145,12 +146,29 @@ namespace UserService.GraphQL
             int id,
             [Service] FoodDeliveryAppContext context)
         {
-            var user = context.Users.Where(o => o.Id == id).FirstOrDefault();
+            var user = context.Users.Where(o => o.Id == id).Include(o => o.UserRoles).FirstOrDefault();
             if (user != null)
             {
                 context.Users.Remove(user);
                 await context.SaveChangesAsync();
             }
+            return await Task.FromResult(user);
+        }
+
+        [Authorize]
+        public async Task<User> ChangePasswordByUserAsync(
+            ChangePassword input,
+            [Service] FoodDeliveryAppContext context)
+        {
+            var user = context.Users.Where(o => o.Id == input.Id).FirstOrDefault();
+            if (user != null)
+            {
+                user.Password = BCrypt.Net.BCrypt.HashPassword(input.Password);
+
+                context.Users.Update(user);
+                await context.SaveChangesAsync();
+            }
+
             return await Task.FromResult(user);
         }
 
