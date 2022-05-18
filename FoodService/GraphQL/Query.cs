@@ -1,22 +1,27 @@
 ﻿using FoodService.Models;
 using HotChocolate.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace FoodService.GraphQL
 {
     public class Query
     {
-        [Authorize(Roles = new[] { "BUYER" })]
+        [Authorize(Roles = new[] { "MANAGER","BUYER" })]
         public IQueryable<Food> ViewFoods([Service] FoodDeliveryAppContext context) =>
             context.Foods;
 
-        [Authorize(Roles = new[] { "BUYER" })]
-        public async Task<Food> ViewFoodByIdAsync(
-        int id,
-        [Service] FoodDeliveryAppContext context)
-        {
-            var food = context.Foods.Where(o => o.Id == id).FirstOrDefault();
+        //[Authorize]
+        //public IQueryable<Food> ViewFoods([Service] FoodDeliveryAppContext context) =>
+        //    context.Foods;
 
-            return await Task.FromResult(food);
-        }
+        //[Authorize]
+        //public async Task<Food> ViewFoodByIdAsync(
+        //int id,
+        //[Service] FoodDeliveryAppContext context)
+        //{
+        //    var food = context.Foods.Where(o => o.Id == id).FirstOrDefault();
+
+        //    return await Task.FromResult(food);
+        //}
     }
 }

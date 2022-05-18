@@ -12,6 +12,44 @@ namespace UserService.GraphQL
 {
     public class Mutation
     {
+        //public async Task<UserData> RegisterUserAsync(
+        //RegisterUser input,
+        //[Service] FoodDeliveryAppContext context)
+        //{
+        //    var user = context.Users.Where(o => o.Username == input.Username).FirstOrDefault();
+        //    if (user != null)
+        //    {
+        //        return await Task.FromResult(new UserData());
+        //    }
+        //    var newUser = new User
+        //    {
+        //        FullName = input.FullName,
+        //        Email = input.Email,
+        //        Username = input.Username,
+        //        Password = BCrypt.Net.BCrypt.HashPassword(input.Password) // encrypt password
+        //    };
+        //    var memberRole = context.Roles.Where(m => m.Name == "BUYER").FirstOrDefault(); //user baru otomatis jadi buyer
+        //    if (memberRole == null)
+        //        throw new Exception("Invalid Role");
+        //    var userRole = new UserRole
+        //    {
+        //        RoleId = memberRole.Id,
+        //        UserId = newUser.Id
+        //    };
+        //    newUser.UserRoles.Add(userRole);
+        //    // EF
+        //    var ret = context.Users.Add(newUser);
+        //    await context.SaveChangesAsync();
+
+        //    return await Task.FromResult(new UserData
+        //    {
+        //        Id = newUser.Id,
+        //        Username = newUser.Username,
+        //        Email = newUser.Email,
+        //        FullName = newUser.FullName
+        //    });
+        //}
+
         public async Task<UserData> RegisterUserAsync(
         RegisterUser input,
         [Service] FoodDeliveryAppContext context)
@@ -28,7 +66,7 @@ namespace UserService.GraphQL
                 Username = input.Username,
                 Password = BCrypt.Net.BCrypt.HashPassword(input.Password) // encrypt password
             };
-            var memberRole = context.Roles.Where(m => m.Name == "BUYER").FirstOrDefault();
+            var memberRole = context.Roles.Where(m => m.Name == "ADMIN").FirstOrDefault();
             if (memberRole == null)
                 throw new Exception("Invalid Role");
             var userRole = new UserRole
@@ -41,8 +79,6 @@ namespace UserService.GraphQL
             var ret = context.Users.Add(newUser);
             await context.SaveChangesAsync();
 
-
-
             return await Task.FromResult(new UserData
             {
                 Id = newUser.Id,
@@ -51,6 +87,7 @@ namespace UserService.GraphQL
                 FullName = newUser.FullName
             });
         }
+
         public async Task<UserToken> LoginAsync(
             LoginUser input,
             [Service] IOptions<TokenSettings> tokenSettings, // setting token
