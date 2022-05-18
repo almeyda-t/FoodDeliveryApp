@@ -10,7 +10,7 @@ namespace OrderService.Models
             Orders = new HashSet<Order>();
         }
 
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public string CourierName { get; set; } = null!;
         public string PhoneNumber { get; set; } = null!;
 

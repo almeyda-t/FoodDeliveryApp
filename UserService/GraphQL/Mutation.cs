@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using OrderService.GraphQL;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -228,6 +229,54 @@ namespace UserService.GraphQL
             await context.SaveChangesAsync();
             return ret.Entity;
         }
+
+        //Courier
+        [Authorize(Roles = new[] { "MANAGER" })]
+        public async Task<Courier> AddCourierAsync(
+            RegisterCourier input,
+            [Service] FoodDeliveryAppContext context)
+        {
+            var courier = new Courier
+            {
+                CourierName = input.CourierName,
+                PhoneNumber = input.PhoneNumber
+            };
+
+            var ret = context.Couriers.Add(courier);
+            await context.SaveChangesAsync();
+            return ret.Entity;
+        }
+
+        [Authorize(Roles = new[] { "MANAGER" })]
+        public async Task<Courier> UpdateCourierAsync(
+            RegisterCourier input,
+            [Service] FoodDeliveryAppContext context)
+        {
+            var courier = context.Couriers.Where(o => o.Id == input.Id).FirstOrDefault();
+            if (courier != null)
+            {
+                courier.CourierName = input.CourierName;
+                courier.PhoneNumber = input.PhoneNumber;
+
+                context.Couriers.Update(courier);
+                await context.SaveChangesAsync();
+            }
+            return await Task.FromResult(courier);
+        }
+
+        //[Authorize(Roles = new[] { "MANAGER" })]
+        //public async Task<ChangeCourier> DeleteCourierByIdAsync(
+        //   int id,
+        //   [Service] FoodDeliveryAppContext context)
+        //{
+        //    var courier = context.Couriers.Where(o => o.Id == id).Include(o => o.).FirstOrDefault();
+        //    if (courier != null)
+        //    {
+        //        context.Couriers.Remove(courier);
+        //        await context.SaveChangesAsync();
+        //    }
+        //    return await Task.FromResult(courier);
+        //}
 
     }
 }

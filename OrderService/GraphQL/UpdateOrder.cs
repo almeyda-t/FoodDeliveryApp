@@ -1,9 +1,8 @@
 ﻿namespace OrderService.GraphQL
 {
-    public partial class OrderData
+    public class UpdateOrder
     {
-        public int? Id { get; set; }
-        public string? Code { get; set; } = null!;
+        public int Id { get; set; }
         public int UserId { get; set; }
         public int CourierId { get; set; }
 

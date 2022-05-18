@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using OrderService.Models;
 
-namespace UserService.Models
+namespace OrderService.GraphQL
 {
-    public partial class Courier
+    public class ChangeCourier
     {
-        public Courier()
+        public ChangeCourier()
         {
             Orders = new HashSet<Order>();
+            UserRoles = new HashSet<UserRole>();
         }
 
         public int? Id { get; set; }
@@ -15,5 +15,6 @@ namespace UserService.Models
         public string PhoneNumber { get; set; } = null!;
 
         public virtual ICollection<Order> Orders { get; set; }
+        public virtual ICollection<UserRole> UserRoles { get; set; }
     }
 }
