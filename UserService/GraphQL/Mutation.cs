@@ -13,44 +13,8 @@ namespace UserService.GraphQL
 {
     public class Mutation
     {
-        //public async Task<UserData> RegisterUserAsync(
-        //RegisterUser input,
-        //[Service] FoodDeliveryAppContext context)
-        //{
-        //    var user = context.Users.Where(o => o.Username == input.Username).FirstOrDefault();
-        //    if (user != null)
-        //    {
-        //        return await Task.FromResult(new UserData());
-        //    }
-        //    var newUser = new User
-        //    {
-        //        FullName = input.FullName,
-        //        Email = input.Email,
-        //        Username = input.Username,
-        //        Password = BCrypt.Net.BCrypt.HashPassword(input.Password) // encrypt password
-        //    };
-        //    var memberRole = context.Roles.Where(m => m.Name == "BUYER").FirstOrDefault(); //user baru otomatis jadi buyer
-        //    if (memberRole == null)
-        //        throw new Exception("Invalid Role");
-        //    var userRole = new UserRole
-        //    {
-        //        RoleId = memberRole.Id,
-        //        UserId = newUser.Id
-        //    };
-        //    newUser.UserRoles.Add(userRole);
-        //    // EF
-        //    var ret = context.Users.Add(newUser);
-        //    await context.SaveChangesAsync();
-
-        //    return await Task.FromResult(new UserData
-        //    {
-        //        Id = newUser.Id,
-        //        Username = newUser.Username,
-        //        Email = newUser.Email,
-        //        FullName = newUser.FullName
-        //    });
-        //}
-
+        //USER
+        //register users
         public async Task<UserData> RegisterUserAsync(
         RegisterUser input,
         [Service] FoodDeliveryAppContext context)
@@ -89,6 +53,7 @@ namespace UserService.GraphQL
             });
         }
 
+        //login
         public async Task<UserToken> LoginAsync(
             LoginUser input,
             [Service] IOptions<TokenSettings> tokenSettings, // setting token
@@ -132,35 +97,13 @@ namespace UserService.GraphQL
                 return await Task.FromResult(
                     new UserToken(new JwtSecurityTokenHandler().WriteToken(jwtToken),
                     expired.ToString(), null));
-                //return new JwtSecurityTokenHandler().WriteToken(jwtToken);
+                
             }
 
             return await Task.FromResult(new UserToken(null, null, Message: "Username or password was invalid"));
         }
 
-        //[Authorize(Roles = new[] { "ADMIN" })]
-        //public async Task<User> AddUserAsync(
-        //    UserInput input,
-        //    [Service] FoodDeliveryAppContext context)
-        //{
-
-        //    // EF
-        //    var user = new User
-        //    {
-        //        FullName = input.FullName,
-        //        Email = input.Email,
-        //        Username = input.Username,
-        //        Password = input.Password
-        //    };
-
-        //    var ret = context.Users.Add(user);
-        //    await context.SaveChangesAsync();
-
-        //    return ret.Entity;
-        //}
-
-        //manage
-
+        //update users
         [Authorize(Roles = new[] { "ADMIN" })]
         public async Task<User> UpdateUserAsync(
             UserData input,
@@ -179,6 +122,7 @@ namespace UserService.GraphQL
             return await Task.FromResult(user);
         }
 
+        //delete users
         [Authorize(Roles = new[] { "ADMIN" })]
         public async Task<User> DeleteUserByIdAsync(
             int id,
@@ -193,6 +137,7 @@ namespace UserService.GraphQL
             return await Task.FromResult(user);
         }
 
+        //change pass by user id
         [Authorize]
         public async Task<User> ChangePasswordByUserAsync(
             ChangePassword input,
@@ -211,6 +156,7 @@ namespace UserService.GraphQL
         }
 
         //PROFILE
+        //add profiles
         [Authorize]
         public async Task<Profile> AddProfileAsync(
             ProfilesInput input,
@@ -230,7 +176,8 @@ namespace UserService.GraphQL
             return ret.Entity;
         }
 
-        //Courier
+        //COURIER
+        //add couriers
         [Authorize(Roles = new[] { "MANAGER" })]
         public async Task<Courier> AddCourierAsync(
             RegisterCourier input,
@@ -247,6 +194,7 @@ namespace UserService.GraphQL
             return ret.Entity;
         }
 
+        //update couriers
         [Authorize(Roles = new[] { "MANAGER" })]
         public async Task<Courier> UpdateCourierAsync(
             RegisterCourier input,
@@ -264,6 +212,7 @@ namespace UserService.GraphQL
             return await Task.FromResult(courier);
         }
 
+        //delete couriers
         [Authorize(Roles = new[] { "MANAGER" })]
         public async Task<Courier> DeleteCourierByIdAsync(
            int id,

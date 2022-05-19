@@ -16,6 +16,7 @@ namespace OrderService.Models
         public int CourierId { get; set; }
 
         public virtual Courier Courier { get; set; } = null!;
+        public virtual User User { get; set; } = null!;
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
     }
 }

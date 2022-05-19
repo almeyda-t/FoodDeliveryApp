@@ -5,6 +5,8 @@ namespace FoodService.GraphQL
 {
     public class Mutation
     {
+        //FOOD
+        //add foods
         [Authorize(Roles = new[] { "MANAGER", "BUYER" })]
         public async Task<Food> AddFoodAsync(
                FoodInput input,
@@ -26,6 +28,7 @@ namespace FoodService.GraphQL
             return ret.Entity;
         }
 
+        //update foods
         [Authorize(Roles = new[] { "MANAGER" })]
         public async Task<Food> UpdateFoodAsync(
             FoodInput input,
@@ -44,6 +47,7 @@ namespace FoodService.GraphQL
             return await Task.FromResult(food);
         }
 
+        //delete foods
         [Authorize(Roles = new[] { "MANAGER" })]
         public async Task<Food> DeleteFoodByIdAsync(
             int id,

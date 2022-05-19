@@ -8,6 +8,7 @@ namespace OrderService.GraphQL
     public class Mutation
     {
         //ORDER
+        //add order
         [Authorize(Roles = new[] { "BUYER" })]
         public async Task<OrderData> AddOrderAsync(
             OrderData input,
@@ -55,6 +56,7 @@ namespace OrderService.GraphQL
             return input;
         }
 
+        //update order
         [Authorize(Roles = new[] { "MANAGER" })]
         public async Task<OrderData> UpdateOrderAsync(
             OrderData input,
@@ -70,12 +72,13 @@ namespace OrderService.GraphQL
 
                 context.Orders.Update(order);
                 context.SaveChanges();
-                //await context.SaveChangesAsync();
+                
             }
             return input;
-            //return await Task.FromResult(order);
+            
         }
 
+        //delete
         [Authorize(Roles = new[] { "MANAGER" })]
         public async Task<Order> DeleteOrderByIdAsync(
             int id,
@@ -91,86 +94,5 @@ namespace OrderService.GraphQL
             return await Task.FromResult(order);
         }
 
-
-
-        //[Authorize(Roles = new[] { "MANAGER" })]
-        //public async Task<Order> UpdateOrderAsync(
-        //   OrdersInput input,
-        //   [Service] FoodDeliveryAppContext context)
-        //{
-        //    var order = context.Orders.Where(o => o.Id == input.Id).FirstOrDefault();
-        //    if (order != null)
-        //    {
-        //        order.Code = input.Code;
-        //        order.UserId = input.UserId;
-        //        order.CourierId = input.CourierId;
-
-        //        context.Orders.Update(order);
-        //        await context.SaveChangesAsync();
-        //    }
-        //    return await Task.FromResult(order);
-        //}
-
-        //[Authorize(Roles = new[] { "MANAGER" })]
-        //public async Task<Order> DeleteOrderByIdAsync(
-        //    int id,
-        //    [Service] FoodDeliveryAppContext context)
-        //{
-        //    var order = context.Orders.Where(o => o.Id == id).FirstOrDefault();
-        //    if (order != null)
-        //    {
-        //        context.Orders.Remove(order);
-        //        await context.SaveChangesAsync();
-        //    }
-        //    return await Task.FromResult(order);
-        //}
-
-
-        //[Authorize(Roles = new[] { "MANAGER" })]
-        //public async Task<Courier> AddCourierAsync(
-        //    RegisterCourier input,
-        //    [Service] FoodDeliveryAppContext context)
-        //{
-        //    var courier = new Courier
-        //    {
-        //        CourierName = input.CourierName,
-        //        PhoneNumber = input.PhoneNumber
-        //    };
-
-        //    var ret = context.Couriers.Add(courier);
-        //    await context.SaveChangesAsync();
-        //    return ret.Entity;
-        //}
-
-        //[Authorize(Roles = new[] { "MANAGER" })]
-        //public async Task<Courier> UpdateCourierAsync(
-        //    RegisterCourier input,
-        //    [Service] FoodDeliveryAppContext context)
-        //{
-        //    var courier = context.Couriers.Where(o => o.Id == input.Id).FirstOrDefault();
-        //    if (courier != null)
-        //    {
-        //        courier.CourierName = input.CourierName;
-        //        courier.PhoneNumber = input.PhoneNumber;
-
-        //        context.Couriers.Update(courier);
-        //        await context.SaveChangesAsync();
-        //    }
-        //    return await Task.FromResult(courier);
-        //}
-
-        //[Authorize(Roles = new[] { "MANAGER" })]
-        //public async Task<ChangeCourier> DeleteCourierByIdAsync(
-        //    int id,
-        //    [Service] FoodDeliveryAppContext context)
-        //{
-        //    var courier = context.Couriers.Where(o => o.Id == id).Include(o => o.).FirstOrDefault();
-        //    if (courier != null)
-        //    {
-        //        context.Couriers.Remove(courier);
-        //        await context.SaveChangesAsync();
-        //    }
-        //    return await Task.FromResult(courier);
-        //}
     }
 }
