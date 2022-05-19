@@ -264,19 +264,19 @@ namespace UserService.GraphQL
             return await Task.FromResult(courier);
         }
 
-        //[Authorize(Roles = new[] { "MANAGER" })]
-        //public async Task<ChangeCourier> DeleteCourierByIdAsync(
-        //   int id,
-        //   [Service] FoodDeliveryAppContext context)
-        //{
-        //    var courier = context.Couriers.Where(o => o.Id == id).Include(o => o.).FirstOrDefault();
-        //    if (courier != null)
-        //    {
-        //        context.Couriers.Remove(courier);
-        //        await context.SaveChangesAsync();
-        //    }
-        //    return await Task.FromResult(courier);
-        //}
+        [Authorize(Roles = new[] { "MANAGER" })]
+        public async Task<Courier> DeleteCourierByIdAsync(
+           int id,
+           [Service] FoodDeliveryAppContext context)
+        {
+            var courier = context.Couriers.Where(o => o.Id == id).FirstOrDefault();
+            if (courier != null)
+            {
+                context.Couriers.Remove(courier);
+                await context.SaveChangesAsync();
+            }
+            return await Task.FromResult(courier);
+        }
 
     }
 }

@@ -65,7 +65,7 @@ namespace OrderService.Models
                 entity.HasOne(d => d.Courier)
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.CourierId)
-                    .OnDelete(DeleteBehavior.Cascade)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_CourierId");
             });
 
@@ -82,7 +82,7 @@ namespace OrderService.Models
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.OrderDetails)
                     .HasForeignKey(d => d.OrderId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_OrderId");
             });
 

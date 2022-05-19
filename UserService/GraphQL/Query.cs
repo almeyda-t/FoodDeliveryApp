@@ -9,6 +9,7 @@ using System.Security.Claims;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 using UserService.Models;
+using OrderService.GraphQL;
 
 namespace UserService.QraphQL
 {
@@ -36,6 +37,15 @@ namespace UserService.QraphQL
             }
             return new List<Profile>().AsQueryable();
         }
+
+        [Authorize(Roles = new[] { "MANAGER" })]
+        public IQueryable<Courier> GetCouriers([Service] FoodDeliveryAppContext context) =>
+            context.Couriers.Select(p => new Courier()
+            {
+                Id = p.Id,
+                CourierName = p.CourierName,
+                PhoneNumber = p.PhoneNumber
+            });
 
         //[Authorize]
         //public IQueryable<Profile> GetProfiles([Service] FoodDeliveryAppContext context, ClaimsPrincipal claimsPrincipal)
