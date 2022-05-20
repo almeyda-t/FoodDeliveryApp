@@ -1,4 +1,6 @@
-﻿namespace UserService.QraphQL
+﻿using UserService.Models;
+
+namespace UserService.QraphQL
 {
     public partial class UserData
     {

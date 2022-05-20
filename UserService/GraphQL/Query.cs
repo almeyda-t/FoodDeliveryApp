@@ -24,9 +24,11 @@ namespace UserService.QraphQL
                 FullName = p.FullName,
                 Email = p.Email,
                 Username = p.Username
+
             });
 
         //PROFILE
+        //get others' profiles by token 
         [Authorize]
         public IQueryable<Profile> GetProfilesbyToken([Service] FoodDeliveryAppContext context, ClaimsPrincipal claimsPrincipal)
         {
@@ -40,17 +42,22 @@ namespace UserService.QraphQL
             return new List<Profile>().AsQueryable();
         }
 
-        //COURIER
+        //get couriers
         [Authorize(Roles = new[] { "MANAGER" })]
-        public IQueryable<Courier> GetCouriers([Service] FoodDeliveryAppContext context) =>
+        public IQueryable<Courier> GetCourierbyProfiles([Service] FoodDeliveryAppContext context) =>
             context.Couriers.Select(p => new Courier()
             {
                 Id = p.Id,
                 CourierName = p.CourierName,
-                PhoneNumber = p.PhoneNumber
+                UserId = p.UserId,
+                
             });
-
-        
+        public IQueryable<User> GetCouriers([Service] FoodDeliveryAppContext context)
+        {
+            var roleCourier = context.Roles.Where(k => k.Name == "COURIER").FirstOrDefault();
+            var couriers = context.Users.Where(k => k.UserRoles.Any(o => o.RoleId == roleCourier.Id));
+            return couriers.AsQueryable();
+        }
 
     }
 }

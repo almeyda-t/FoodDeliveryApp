@@ -27,11 +27,11 @@ namespace OrderService.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS;Database=FoodDeliveryApp;uid=tester;pwd=pass123;");
-            }
+//            if (!optionsBuilder.IsConfigured)
+//            {
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+//                optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS;Database=FoodDeliveryApp;uid=tester;pwd=pass123;");
+//            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -42,7 +42,11 @@ namespace OrderService.Models
 
                 entity.Property(e => e.CourierName).HasMaxLength(50);
 
-                entity.Property(e => e.PhoneNumber).HasMaxLength(50);
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Couriers)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Courier_User");
             });
 
             modelBuilder.Entity<Food>(entity =>
@@ -61,6 +65,18 @@ namespace OrderService.Models
                 entity.Property(e => e.Code)
                     .HasMaxLength(50)
                     .HasColumnName("code");
+
+                entity.Property(e => e.Latitude)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Longitude)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Status)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.HasOne(d => d.Courier)
                     .WithMany(p => p.Orders)
@@ -88,7 +104,7 @@ namespace OrderService.Models
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.OrderDetails)
                     .HasForeignKey(d => d.OrderId)
-                    .OnDelete(DeleteBehavior.Cascade)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_OrderId");
             });
 
@@ -126,6 +142,8 @@ namespace OrderService.Models
                 entity.Property(e => e.FullName).HasMaxLength(50);
 
                 entity.Property(e => e.Password).HasColumnType("ntext");
+
+                entity.Property(e => e.Role).HasMaxLength(50);
 
                 entity.Property(e => e.Username).HasMaxLength(50);
             });

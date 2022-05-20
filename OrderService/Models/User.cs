@@ -7,6 +7,7 @@ namespace OrderService.Models
     {
         public User()
         {
+            Couriers = new HashSet<Courier>();
             Orders = new HashSet<Order>();
             Profiles = new HashSet<Profile>();
             UserRoles = new HashSet<UserRole>();
@@ -17,7 +18,10 @@ namespace OrderService.Models
         public string Email { get; set; } = null!;
         public string Username { get; set; } = null!;
         public string Password { get; set; } = null!;
+        public string Role { get; set; } = null!;
+        public bool Verification { get; set; }
 
+        public virtual ICollection<Courier> Couriers { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<Profile> Profiles { get; set; }
         public virtual ICollection<UserRole> UserRoles { get; set; }

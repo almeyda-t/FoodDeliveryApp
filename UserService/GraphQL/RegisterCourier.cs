@@ -4,6 +4,8 @@
     (
         int? Id,
         string CourierName,
-        string PhoneNumber
+        string PhoneNumber,
+        bool? Availability,
+        int UserId
     );
 }

@@ -5,6 +5,7 @@
         string FullName,
         string Email,
         string Username,
-        string Password
+        string Password,
+        string Role
     );
 }
