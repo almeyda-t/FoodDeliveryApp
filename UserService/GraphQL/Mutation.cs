@@ -146,23 +146,36 @@ namespace UserService.GraphQL
             return "Verification success";
         }
 
-        //update users
-        [Authorize(Roles = new[] { "ADMIN" })]
-        public async Task<User> UpdateUserAsync(
-            UserData input,
+        //update users and couriers
+        [Authorize(Roles = new[] { "ADMIN","MANAGER" })]
+        public async Task<UpdateUser> UpdateUserAsync(
+            UserData input, ClaimsPrincipal claimsPrincipal,
             [Service] FoodDeliveryAppContext context)
         {
+            var username = claimsPrincipal.Identity.Name;
+            var userUpdate = context.Users.Where(o => o.Username == username).FirstOrDefault();
             var user = context.Users.Where(o => o.Id == input.Id).FirstOrDefault();
             if (user != null)
             {
-                user.FullName = input.FullName;
-                user.Email = input.Email;
-                user.Username = input.Username;
+                if((userUpdate.Role == "ADMIN" && user.Role != "COURIER") || (userUpdate.Role == "MANAGER" && user.Role == "COURIER"))
+                {
+                    user.FullName = input.FullName;
+                    user.Email = input.Email;
+                    user.Username = input.Username;
 
-                context.Users.Update(user);
-                await context.SaveChangesAsync();
+                    context.Users.Update(user);
+                    await context.SaveChangesAsync();
+
+                    return new UpdateUser
+                    {
+                        Message = "Success"
+                    };
+                }
             }
-            return await Task.FromResult(user);
+            return new UpdateUser
+            {
+                Message = "Failed"
+            };
         }
 
         //delete users by admin
