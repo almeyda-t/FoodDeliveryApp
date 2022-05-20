@@ -12,7 +12,6 @@ namespace FoodService.GraphQL
                FoodInput input,
                [Service] FoodDeliveryAppContext context)
         {
-
             // EF
             var food = new Food
             {

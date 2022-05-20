@@ -14,7 +14,7 @@ namespace UserService.GraphQL
     public class Mutation
     {
         //USER
-        //register users
+        //register
         public async Task<UserData> RegisterUserAsync(
         RegisterUser input,
         [Service] FoodDeliveryAppContext context)
@@ -58,8 +58,8 @@ namespace UserService.GraphQL
         //login
         public async Task<UserToken> LoginAsync(
             LoginUser input,
-            [Service] IOptions<TokenSettings> tokenSettings, // setting token
-            [Service] FoodDeliveryAppContext context) // EF
+            [Service] IOptions<TokenSettings> tokenSettings, 
+            [Service] FoodDeliveryAppContext context) 
         {
             var user = context.Users.Where(o => o.Username == input.Username).FirstOrDefault();
             if (user == null)
@@ -104,9 +104,7 @@ namespace UserService.GraphQL
                 return await Task.FromResult(
                     new UserToken(new JwtSecurityTokenHandler().WriteToken(jwtToken),
                     expired.ToString(), null));
-                
             }
-
             return await Task.FromResult(new UserToken(null, null, Message: "Username or password was invalid"));
         }
 
@@ -141,7 +139,6 @@ namespace UserService.GraphQL
             catch(Exception ex)
             {
                 transaction.Rollback();
-
             }
             return "Verification success";
         }
@@ -215,20 +212,22 @@ namespace UserService.GraphQL
             return await Task.FromResult(user);
         }
 
-        //change pass by user id
-        public async Task<User> ChangePasswordByUserAsync(
-            ChangePassword input,
+        //change pass by token
+        [Authorize]
+        public async Task<User> ChangePasswordByTokenAsync(
+            ChangePassword input, ClaimsPrincipal claimsPrincipal,
             [Service] FoodDeliveryAppContext context)
         {
-            var user = context.Users.Where(o => o.Id == input.Id).FirstOrDefault();
-            if (user != null)
+            var username = claimsPrincipal.Identity.Name;
+            var user = context.Users.Where(o => o.Username == username).FirstOrDefault();
+            bool valid = BCrypt.Net.BCrypt.Verify(input.OldPassword, user.Password);
+            if (user != null && valid)
             {
-                user.Password = BCrypt.Net.BCrypt.HashPassword(input.Password);
+                user.Password = BCrypt.Net.BCrypt.HashPassword(input.NewPassword);
 
                 context.Users.Update(user);
                 await context.SaveChangesAsync();
             }
-
             return await Task.FromResult(user);
         }
 
