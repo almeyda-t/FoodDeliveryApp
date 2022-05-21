@@ -7,7 +7,7 @@ namespace FoodService.GraphQL
     {
         //FOOD
         //add foods
-        [Authorize(Roles = new[] { "MANAGER", "BUYER" })]
+        [Authorize(Roles = new[] { "MANAGER"})]
         public async Task<Food> AddFoodAsync(
                FoodInput input,
                [Service] FoodDeliveryAppContext context)
